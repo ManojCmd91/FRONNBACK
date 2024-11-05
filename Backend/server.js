@@ -14,6 +14,9 @@ app.use(cors({
     allowedHeaders: ['Content-Type'], // Specify allowed headers
 }));
 
+// Middleware to enable CORS
+app.use(cors(corsOptions));
+
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
