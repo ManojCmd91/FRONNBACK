@@ -8,7 +8,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to enable CORS
-app.use(cors()); // Allows all origins; customize this in production
+app.use(cors({
+    origin: 'https://fronnback3.onrender.com/', // Replace with your actual frontend URL for production
+    methods: ['GET', 'POST'], // Specify allowed methods
+    allowedHeaders: ['Content-Type'], // Specify allowed headers
+}));
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
@@ -29,7 +33,6 @@ app.get('/', (req, res) => {
 
 // Route to handle form submission
 app.post('/register-bus-user', (req, res) => {
-    // Handle registration data
     const userData = req.body;
     
     // Example: log the user data
@@ -37,6 +40,12 @@ app.post('/register-bus-user', (req, res) => {
     
     // Respond with a success message
     res.status(200).json({ message: 'User registered successfully!' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error stack for debugging
+    res.status(500).json({ message: 'Something went wrong! Please try again later.' });
 });
 
 // Start the server
