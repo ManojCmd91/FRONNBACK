@@ -18,19 +18,19 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Could not connect to MongoDB...', err));
 
-// Route to serve the registration form
+// Route to serve the registration form (homepage)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Change 'index.html' to your actual HTML file name if different
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Ensure 'index.html' is your actual HTML file
 });
 
 // Route to handle form submission
 app.post('/register-bus-user', (req, res) => {
-    // Here you can handle the registration data and save it to your MongoDB database
+    // Handle the registration data and save it to your MongoDB database
     const userData = req.body;
-    
+
     // Example: log the user data
     console.log('User Data:', userData);
-    
+
     // Respond with a success message
     res.status(200).json({ message: 'User registered successfully!' });
 });
