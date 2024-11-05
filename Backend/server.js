@@ -1,14 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import CORS
 const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware to enable CORS
+app.use(cors()); // Allows all origins; customize this in production
+
 // Middleware to parse JSON and URL-encoded data
-const cors = require('cors');
-app.use(cors()); // Allows all origins; customize for better security
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,19 +22,19 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Could not connect to MongoDB...', err));
 
-// Route to serve the registration form (homepage)
+// Route to serve the registration form
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Ensure 'index.html' is your actual HTML file
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Change 'index.html' to your actual HTML file name if different
 });
 
 // Route to handle form submission
 app.post('/register-bus-user', (req, res) => {
-    // Handle the registration data and save it to your MongoDB database
+    // Handle registration data
     const userData = req.body;
-
+    
     // Example: log the user data
     console.log('User Data:', userData);
-
+    
     // Respond with a success message
     res.status(200).json({ message: 'User registered successfully!' });
 });
