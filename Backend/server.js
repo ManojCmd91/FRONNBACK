@@ -7,6 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON and URL-encoded data
+const cors = require('cors');
+app.use(cors()); // Allows all origins; customize for better security
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
