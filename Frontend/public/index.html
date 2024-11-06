@@ -60,37 +60,12 @@
         let latitude = null;
         let longitude = null;
 
-        // Function to convert decimal degrees to DMS format
-        function decimalToDMS(deg) {
-            let d = Math.floor(deg);
-            let min = Math.floor((deg - d) * 60);
-            let sec = ((deg - d - min / 60) * 3600).toFixed(1);
-            return `${d}°${min}'${sec}"`;
-        }
-
-        // Function to get the formatted coordinates (N/S, E/W)
-        function formatCoordinates(lat, lng) {
-            const latDMS = decimalToDMS(Math.abs(lat));
-            const lngDMS = decimalToDMS(Math.abs(lng));
-
-            const latDirection = lat >= 0 ? 'N' : 'S';
-            const lngDirection = lng >= 0 ? 'E' : 'W';
-
-            return `${latDMS} ${latDirection}, ${lngDMS} ${lngDirection}`;
-        }
-
         // Request high accuracy for geolocation
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 latitude = position.coords.latitude;
                 longitude = position.coords.longitude;
-
-                // Format coordinates to DMS and display
-                const formattedLocation = formatCoordinates(latitude, longitude);
-                console.log("User Location (DMS format):", formattedLocation);
-
-                // Show formatted location as an alert (for testing purposes)
-                alert(`Your location is: ${formattedLocation}`);
+                console.log("User Location:", latitude, longitude);
             }, (error) => {
                 console.error("Error obtaining location:", error.message);
                 alert("Error obtaining location: " + error.message);
@@ -113,16 +88,14 @@
                 return;
             }
 
-            // Format the location in DMS format before sending
-            const formattedLocation = formatCoordinates(latitude, longitude);
-
-            // Gather form data including formatted location
+            // Gather form data including latitude and longitude
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 route: document.getElementById('route').value,
-                location: formattedLocation // Send location in DMS format
+                latitude: latitude,
+                longitude: longitude
             };
 
             // Send data to the backend
