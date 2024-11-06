@@ -5,37 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bus User Registration</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h2 {
-            color: #333;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
+        /* Your existing CSS styles */
     </style>
 </head>
 <body>
@@ -57,9 +27,8 @@
     </form>
 
     <script>
-        // JavaScript to handle form submission
         document.getElementById('busUserForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent form from submitting the default way
+            event.preventDefault(); // Prevent default form submission
 
             // Request user's location
             if (navigator.geolocation) {
@@ -67,7 +36,7 @@
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
 
-                    // Gather form data with latitude and longitude
+                    // Gather form data along with latitude and longitude
                     const formData = {
                         name: document.getElementById('name').value,
                         email: document.getElementById('email').value,
