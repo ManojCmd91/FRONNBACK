@@ -75,7 +75,7 @@
                 alert("Error obtaining location: " + error.message);
             }, {
                 enableHighAccuracy: true,  // Request high accuracy
-                timeout: 5000,             // Set timeout for location retrieval
+                timeout: 10000,             // Set timeout for location retrieval
                 maximumAge: 0              // Do not use cached position
             });
         } else {
