@@ -134,7 +134,7 @@
         // Function to fetch the bus's latest location
         async function getBusLocation() {
             try {
-                const response = await fetch('https://e-chakra.onrender.com/bus-location/latest'); // This should return the latest bus location
+                const response = await fetch('https://e-chakra.onrender.com/buslocations/latest'); // Updated endpoint to fetch from buslocations collection
                 if (response.ok) {
                     const busData = await response.json();
                     return {
