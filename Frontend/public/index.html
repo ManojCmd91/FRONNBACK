@@ -5,143 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bus User Registration & ETA</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(45deg, #ff6a00, #ee0979);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px;
             padding: 20px;
+            background-color: #f9f9f9;
         }
         h2 {
-            font-size: 2.5rem;
-            color: #fff;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
-        .form-container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in-out;
+            color: #333;
         }
         label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
             display: block;
-            color: #fff;
+            margin: 10px 0 5px;
         }
         input {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 10px;
-            background-color: #444;
-            color: #fff;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        input:focus {
-            background-color: #ff6a00;
-            outline: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
-            padding: 15px;
-            font-size: 1.2rem;
-            background-color: #ff0979;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            width: 100%;
         }
         button:hover {
-            background-color: #ff6a00;
-            transform: scale(1.1);
+            background-color: #218838;
         }
-        .map-container {
-            width: 100%;
-            max-width: 700px;
-            margin-top: 30px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        .eta-container {
-            margin-top: 40px;
-        }
-        .eta-container button {
-            background-color: #ff6a00;
-        }
-        .eta-container button:hover {
-            background-color: #ff0979;
+        #map {
+            height: 400px; /* Set a fixed height for the map */
+            margin-top: 20px;
         }
         #etaResult {
-            font-size: 1.5rem;
-            margin-top: 15px;
-            color: #fff;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        .footer {
-            position: fixed;
-            bottom: 10px;
-            color: #fff;
-            font-size: 1rem;
-            opacity: 0.8;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h2>Bus User Registration & ETA</h2>
+    <h2>Bus User Registration Form</h2>
+    <form id="busUserForm">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required>
 
-    <div class="form-container">
-        <form id="busUserForm">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required>
 
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required>
+        <label for="route">Preferred Route:</label>
+        <input type="text" id="route" name="route" required>
 
-            <label for="route">Preferred Route:</label>
-            <input type="text" id="route" name="route" required>
+        <button type="submit">Submit</button>
+    </form>
 
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+    <div id="map"></div> <!-- This will hold the map -->
 
-    <div class="map-container">
-        <div id="map"></div> <!-- Map container -->
-    </div>
-
-    <div class="eta-container">
-        <h2>Calculate ETA</h2>
-        <button id="calculateEtaBtn">Calculate ETA</button>
-        <p id="etaResult"></p>
-    </div>
-
-    <div class="footer">Designed by ChatGPT 💖</div>
+    <h2>ETA Calculation</h2>
+    <button id="calculateEtaBtn">Calculate ETA</button>
+    <p id="etaResult"></p>
 
     <script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js"></script>
     <script>
@@ -153,14 +82,16 @@
 
         // Form submission event listener
         document.getElementById('busUserForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
+            // Ensure geolocation is available
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     latitude = position.coords.latitude;
                     longitude = position.coords.longitude;
                     console.log("User Location:", latitude, longitude);
 
+                    // Gather form data including latitude and longitude
                     const formData = {
                         name: document.getElementById('name').value,
                         email: document.getElementById('email').value,
@@ -171,6 +102,7 @@
                     };
 
                     try {
+                        // Send data to the backend for user registration
                         const response = await fetch('https://e-chakra.onrender.com/register-bus-user', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -181,6 +113,8 @@
                             const data = await response.json();
                             alert("Registration successful: " + data.message);
                             document.getElementById('busUserForm').reset();
+
+                            // Create the map after successful registration
                             createMap(latitude, longitude);
                         } else {
                             const errorData = await response.json();
@@ -190,11 +124,12 @@
                         alert("Error: " + error.message);
                     }
                 }, (error) => {
+                    console.error("Error obtaining location:", error.message);
                     alert("Error obtaining location: " + error.message);
                 }, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
+                    enableHighAccuracy: true,  // Request high accuracy
+                    timeout: 10000,             // Set timeout for location retrieval
+                    maximumAge: 0              // Do not use cached position
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
@@ -204,7 +139,7 @@
         // Function to fetch the bus's latest location
         async function getBusLocation() {
             try {
-                const response = await fetch('https://e-chakra.onrender.com/buslocations/latest');
+                const response = await fetch('https://e-chakra.onrender.com/buslocations/latest'); // Updated endpoint to fetch from buslocations collection
                 if (response.ok) {
                     const busData = await response.json();
                     return {
@@ -216,6 +151,7 @@
                     return null;
                 }
             } catch (error) {
+                console.error("Error fetching bus location:", error);
                 alert("Error fetching bus location: " + error.message);
                 return null;
             }
@@ -223,32 +159,40 @@
 
         // Function to create the map after registration
         async function createMap(latitude, longitude) {
-            userMap = L.map('map').setView([latitude, longitude], 13);
+            // Initialize the map
+            userMap = L.map('map').setView([latitude, longitude], 13); // Set the map's center to user location
 
+            // Add the OpenStreetMap tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(userMap);
 
+            // Add a marker for the user's location
             userMarker = L.marker([latitude, longitude]).addTo(userMap);
             userMarker.bindPopup('You are here').openPopup();
 
+            // Fetch the bus location and add a marker
             const busLocation = await getBusLocation();
             if (busLocation) {
                 busMarker = L.marker([busLocation.latitude, busLocation.longitude]).addTo(userMap);
                 busMarker.bindPopup('Bus location').openPopup();
             }
 
+            // Adjust the map to make sure the markers are visible
             userMap.setView([latitude, longitude], 13);
         }
 
+        // Event listener for calculating ETA
         document.getElementById('calculateEtaBtn').addEventListener('click', async () => {
             try {
                 const response = await fetch('https://e-chakra.onrender.com/calculate-eta/latest');
+                
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('etaResult').innerText = `ETA: ${data.eta}, Distance: ${data.distance}`;
                 } else {
-                    alert("ETA calculation failed");
+                    const errorData = await response.json();
+                    alert("ETA calculation failed: " + (errorData.message || "Please try again."));
                 }
             } catch (error) {
                 alert("Error: " + error.message);
