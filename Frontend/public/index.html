@@ -75,10 +75,6 @@
         let userMarker = null;
         let busMarker = null;
 
-        // Static bus location for now (replace with real-time data from backend)
-        const busLatitude = 12.9716;  // Bus latitude
-        const busLongitude = 77.5946; // Bus longitude
-
         // Form submission event listener
         document.getElementById('busUserForm').addEventListener('submit', async (event) => {
             event.preventDefault(); // Prevent default form submission
@@ -135,8 +131,29 @@
             }
         });
 
+        // Function to fetch the bus's latest location
+        async function getBusLocation() {
+            try {
+                const response = await fetch('https://e-chakra.onrender.com/bus-location/latest'); // Replace with your actual endpoint
+                if (response.ok) {
+                    const busData = await response.json();
+                    return {
+                        latitude: busData.latitude,
+                        longitude: busData.longitude
+                    };
+                } else {
+                    alert("Failed to fetch bus location");
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching bus location:", error);
+                alert("Error fetching bus location: " + error.message);
+                return null;
+            }
+        }
+
         // Function to create the map after registration
-        function createMap(latitude, longitude) {
+        async function createMap(latitude, longitude) {
             // Initialize the map
             userMap = L.map('map').setView([latitude, longitude], 13); // Set the map's center to user location
 
@@ -149,9 +166,12 @@
             userMarker = L.marker([latitude, longitude]).addTo(userMap);
             userMarker.bindPopup('You are here').openPopup();
 
-            // Add a marker for the bus location (replace this with real-time data)
-            busMarker = L.marker([busLatitude, busLongitude]).addTo(userMap);
-            busMarker.bindPopup('Bus location').openPopup();
+            // Fetch the bus location and add a marker
+            const busLocation = await getBusLocation();
+            if (busLocation) {
+                busMarker = L.marker([busLocation.latitude, busLocation.longitude]).addTo(userMap);
+                busMarker.bindPopup('Bus location').openPopup();
+            }
 
             // Adjust the map to make sure the markers are visible
             userMap.setView([latitude, longitude], 13);
