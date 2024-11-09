@@ -73,6 +73,11 @@
         let longitude = null;
         let userMap = null;
         let userMarker = null;
+        let busMarker = null;
+
+        // Static bus location for now (replace with real-time data from backend)
+        const busLatitude = 12.9716;  // Bus latitude
+        const busLongitude = 77.5946; // Bus longitude
 
         // Form submission event listener
         document.getElementById('busUserForm').addEventListener('submit', async (event) => {
@@ -144,7 +149,11 @@
             userMarker = L.marker([latitude, longitude]).addTo(userMap);
             userMarker.bindPopup('You are here').openPopup();
 
-            // Adjust the map to make sure the marker is centered
+            // Add a marker for the bus location (replace this with real-time data)
+            busMarker = L.marker([busLatitude, busLongitude]).addTo(userMap);
+            busMarker.bindPopup('Bus location').openPopup();
+
+            // Adjust the map to make sure the markers are visible
             userMap.setView([latitude, longitude], 13);
         }
 
