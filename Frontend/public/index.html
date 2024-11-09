@@ -81,17 +81,27 @@
                 longitude = position.coords.longitude;
                 console.log("User Location:", latitude, longitude);
 
-                // Initialize the map
-                userMap = L.map('map').setView([latitude, longitude], 13); // Set the map's center to user location
+                // Initialize the map if it hasn't been created already
+                if (!userMap) {
+                    userMap = L.map('map').setView([latitude, longitude], 13); // Set the map's center to user location
+                }
 
                 // Add the OpenStreetMap tile layer
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(userMap);
 
+                // If there's already a marker, remove it
+                if (userMarker) {
+                    userMarker.remove();
+                }
+
                 // Add a marker for the user's location
                 userMarker = L.marker([latitude, longitude]).addTo(userMap);
                 userMarker.bindPopup('You are here').openPopup();
+
+                // Adjust the map to make sure the marker is centered
+                userMap.setView([latitude, longitude], 13);
             }, (error) => {
                 console.error("Error obtaining location:", error.message);
                 alert("Error obtaining location: " + error.message);
