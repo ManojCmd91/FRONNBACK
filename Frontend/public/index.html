@@ -5,79 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bus User Registration & ETA</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fb;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            color: #333;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
         }
         h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
         }
         .form-container {
-            background-color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 30px auto;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
         }
         label {
-            display: block;
-            font-weight: 500;
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 8px;
+            display: block;
+            color: #fff;
         }
         input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            border: none;
+            border-radius: 10px;
+            background-color: #444;
+            color: #fff;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
         input:focus {
-            border-color: #3498db;
+            background-color: #ff6a00;
             outline: none;
         }
         button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: #fff;
-            font-size: 18px;
+            padding: 15px;
+            font-size: 1.2rem;
+            background-color: #ff0979;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 100%;
         }
         button:hover {
-            background-color: #2980b9;
+            background-color: #ff6a00;
+            transform: scale(1.1);
+        }
+        .map-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         .eta-container {
-            text-align: center;
-            margin-top: 30px;
+            margin-top: 40px;
         }
-        #map {
-            height: 400px;
-            margin-top: 20px;
-            border-radius: 8px;
+        .eta-container button {
+            background-color: #ff6a00;
+        }
+        .eta-container button:hover {
+            background-color: #ff0979;
         }
         #etaResult {
+            font-size: 1.5rem;
             margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #2c3e50;
+            color: #fff;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            color: #fff;
+            font-size: 1rem;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <h2>Bus User Registration & ETA</h2>
+
     <div class="form-container">
         <form id="busUserForm">
             <label for="name">Full Name:</label>
@@ -96,13 +131,17 @@
         </form>
     </div>
 
-    <div id="map"></div> <!-- Map container -->
+    <div class="map-container">
+        <div id="map"></div> <!-- Map container -->
+    </div>
 
     <div class="eta-container">
         <h2>Calculate ETA</h2>
         <button id="calculateEtaBtn">Calculate ETA</button>
         <p id="etaResult"></p>
     </div>
+
+    <div class="footer">Designed by ChatGPT 💖</div>
 
     <script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js"></script>
     <script>
