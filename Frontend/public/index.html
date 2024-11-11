@@ -80,6 +80,7 @@
         let userMarker = null;
         let busMarker = null;
 
+        // Form submission event listener
         document.getElementById('busUserForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -129,6 +130,7 @@
             }
         });
 
+        // Function to fetch the bus's latest location
         async function getBusLocation() {
             try {
                 const response = await fetch('https://e-chakra.onrender.com/buslocations/latest');
@@ -146,6 +148,7 @@
             }
         }
 
+        // Function to create the map after registration
         async function createMap(latitude, longitude) {
             userMap = L.map('map').setView([latitude, longitude], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -163,10 +166,23 @@
                 const updatedBusLocation = await getBusLocation();
                 if (updatedBusLocation && busMarker) {
                     busMarker.setLatLng([updatedBusLocation.latitude, updatedBusLocation.longitude]);
+
+                    // Check if bus location is very close to user location
+                    if (isBusArrived(updatedBusLocation.latitude, updatedBusLocation.longitude, latitude, longitude)) {
+                        document.getElementById('etaResult').innerText = "The bus has arrived!";
+                    }
                 }
             }, 10000);
         }
 
+        // Function to check if the bus has arrived (within a small distance threshold)
+        function isBusArrived(busLat, busLng, userLat, userLng) {
+            const distanceThreshold = 0.0005; // Approx. 50 meters
+            const distance = Math.sqrt(Math.pow(busLat - userLat, 2) + Math.pow(busLng - userLng, 2));
+            return distance < distanceThreshold;
+        }
+
+        // Event listener for calculating ETA
         document.getElementById('calculateEtaBtn').addEventListener('click', async () => {
             try {
                 const response = await fetch('https://e-chakra.onrender.com/calculate-eta/latest');
