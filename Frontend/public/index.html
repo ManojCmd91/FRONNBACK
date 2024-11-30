@@ -76,5 +76,36 @@
             <a href="register.html">Sign Up</a>
         </div>
     </div>
+
+    <script>
+        // Login form submission
+        const handleLogin = async (event) => {
+            event.preventDefault();
+
+            const email = event.target.email.value;
+            const password = event.target.password.value;
+
+            const response = await fetch('https://e-chakra.onrender.com/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Handle successful login
+                alert('Login successful!');
+                // Redirect to the map page (you can also store the user info in localStorage or cookies)
+                window.location.href = '/map'; // This should be the route for the map functionality
+            } else {
+                // Handle login failure
+                alert(data.message || 'Login failed');
+            }
+        };
+
+        // Attach the event listener to the login form
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    </script>
 </body>
 </html>
