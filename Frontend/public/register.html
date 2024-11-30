@@ -51,12 +51,12 @@
         button:hover {
             background-color: #218838;
         }
-        .forgot-password {
+        .login-link {
             text-align: center;
             margin-top: 10px;
             font-size: 14px;
         }
-        .forgot-password a {
+        .login-link a {
             color: #007bff;
             text-decoration: none;
         }
@@ -72,48 +72,30 @@
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
 
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" required>
-
-            <label for="route">Preferred Route:</label>
-            <input type="text" id="route" name="route" required>
-
-            <label for="latitude">Latitude:</label>
-            <input type="number" id="latitude" name="latitude" step="0.0001" required>
-
-            <label for="longitude">Longitude:</label>
-            <input type="number" id="longitude" name="longitude" step="0.0001" required>
-
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
             <button type="submit">Sign Up</button>
         </form>
-        <div class="forgot-password">
+        <div class="login-link">
             <a href="index.html">Already have an account? Login</a>
         </div>
     </div>
 
     <script>
-        // Sign-up form submission
-        const handleSignUp = async (event) => {
+        // Handle sign-up form submission
+        document.getElementById('registerForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const formData = {
-                name: event.target.name.value,
-                email: event.target.email.value,
-                phone: event.target.phone.value,
-                route: event.target.route.value,
-                latitude: event.target.latitude.value,
-                longitude: event.target.longitude.value,
-                password: event.target.password.value
-            };
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
             try {
                 const response = await fetch('https://e-chakra.onrender.com/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify({ name, email, password })
                 });
 
                 const data = await response.json();
@@ -128,10 +110,7 @@
                 alert('An error occurred while registering. Please try again later.');
                 console.error("Registration error:", error);
             }
-        };
-
-        // Attach the event listener to the register form
-        document.getElementById('registerForm').addEventListener('submit', handleSignUp);
+        });
     </script>
 </body>
 </html>
