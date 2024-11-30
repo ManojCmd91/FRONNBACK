@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Functionality</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css" />
+</head>
+<body>
+    <h2>Map and ETA</h2>
+    <div id="map" style="height: 400px;"></div>
+    <p id="etaResult"></p>
+
+    <script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize map and fetch user's location or bus location logic here
+        const map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // You can add logic for bus tracking and ETA calculation
+        document.getElementById('etaResult').innerText = "ETA functionality will be added here.";
+    </script>
+</body>
+</html>
